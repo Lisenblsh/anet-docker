@@ -1,0 +1,22 @@
+services:
+  anet-keygen:
+    build:
+      context: ./anet-keygen/
+      dockerfile: Dockerfile
+    image: anet-keygen:latest
+    container_name: anet-keygen
+
+  anet-genconf:
+    build:
+      context: ./anet-genconf/
+      dockerfile: Dockerfile
+    image: anet-genconf:latest
+    container_name: anet-genconf
+    env_file:
+      - .env
+    depends_on:
+      - anet-keygen #just for build image
+    volumes:
+      - ./generated-keys:/app/keys
+      - ./config:/app/config
+ 

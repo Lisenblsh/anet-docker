@@ -1,0 +1,78 @@
+services:
+  anet-auth:
+    build:
+      context: ./anet-auth/
+      dockerfile: Dockerfile
+    image: anet-auth:latest
+    container_name: anet-auth
+    restart: unless-stopped
+    depends_on:
+      - anet-db
+    env_file:
+      - .env
+    networks:
+      - anet_net
+    expose:
+      - "3000"
+
+  anet-server:
+    build:
+      context: ./anet-server/
+      dockerfile: Dockerfile
+    image: anet-server:latest
+    container_name: anet-server
+    restart: unless-stopped
+    volumes:
+      - ./config:/app/config
+    env_file:
+      - .env
+    networks:
+      - anet_net
+    ports:
+      - 8222:8222
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+
+  anet-keygen:
+    build:
+      context: ./anet-keygen/
+      dockerfile: Dockerfile
+    image: anet-keygen:latest
+    container_name: anet-keygen
+    profiles: 
+      - generate
+
+  anet-genconf:
+    build:
+      context: ./anet-genconf/
+      dockerfile: Dockerfile
+    image: anet-genconf:latest
+    container_name: anet-genconf
+    profiles:
+      - generate
+    volumes:
+      - ./generated-keys:/app/keys
+      - ./config:/app/config
+ 
+  anet-db:
+    container_name: anet-db
+    image: postgres:18
+    env_file:
+      - .env
+    volumes:
+      - ./pg_data:/var/lib/postgresql
+    expose:
+      - "5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB" ]
+      interval: 2s
+      timeout: 5s
+      retries: 5  
+    networks:
+      - anet_net  
+
+networks:
+  anet_net:
+    name: anet_net

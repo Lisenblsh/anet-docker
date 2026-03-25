@@ -1,0 +1,5 @@
+config/**
+pg_data/**
+generated-keys/**
+.env
+
