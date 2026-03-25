@@ -30,6 +30,19 @@ build_image() {
   fi
 }
 
+clean_image() {
+  if [[ "$1" == "all" ]]; then
+    for item in "${images[@]}"; do
+      clean_image $item
+    done
+  elif [[ "$1" == "anet-genconf" ]]; then
+    clean_image "anet-keygen"
+    docker rmi $1
+  else
+    docker rmi $1
+  fi
+}
+
 case $1 in
 -b | --build)
   if check_image $2; then
@@ -43,6 +56,13 @@ case $1 in
   ;;
 -g | --genconf)
   docker compose -f ./generate.yml run --rm --remove-orphans anet-genconf
+  ;;
+-c | --clean)
+  if check_image $2; then
+    clean_image $2
+  else
+    echo "No image with name $2"
+  fi
   ;;
 -h | --help)
   echo "This is help"
