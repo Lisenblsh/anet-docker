@@ -30,7 +30,7 @@ services:
       - anet_net
     ports:
       - "${SSH_PORT}:${SSH_PORT}"
-      - "${QUIC_PORT}:${QUIC_PORT}"
+      - "${QUIC_PORT}:${QUIC_PORT}/udp"
     cap_add:
       - NET_ADMIN
     sysctls:
