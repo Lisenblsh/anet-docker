@@ -9,7 +9,7 @@ RUN git clone https://github.com/ZeroTworu/anet.git .
 
 WORKDIR /app/anet-keygen
 
-RUN cargo build --release --verbose
+RUN cargo build --release
 
 # STAGE 2: runtime
 FROM debian:bookworm-slim
