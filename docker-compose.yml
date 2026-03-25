@@ -29,10 +29,12 @@ services:
     networks:
       - anet_net
     ports:
-      - 8222:8222
-      - 8443:8443
+      - "${SSH_PORT}:${SSH_PORT}"
+      - "${QUIC_PORT}:${QUIC_PORT}"
     cap_add:
       - NET_ADMIN
+    sysctls:
+      - net.ipv4.ip_forward=1
     devices:
       - /dev/net/tun:/dev/net/tun
 

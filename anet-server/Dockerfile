@@ -14,15 +14,18 @@ RUN cargo build --release
 # STAGE 2: runtime
 FROM debian:bookworm-slim
 
-
 RUN apt-get update && \
-    apt-get install -y ssh && \
+    apt-get install -y ssh iptables && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
 COPY --from=builder /app/target/release/anet-server /app/anet-server
 
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 RUN chmod +x /app/anet-server
 
+ENTRYPOINT ["/entrypoint.sh"]
 CMD ["./anet-server", "-c", "/app/config/server.toml"]
