@@ -20,7 +20,7 @@ openssl req -x509 -newkey ed25519 \
   -addext "basicConstraints=critical,CA:FALSE" \
   -addext "keyUsage=digitalSignature,keyEncipherment"
 
-auth_servers='["http://anet-db:3000/api/v1"]'
+auth_servers='["http://anet-auth:3000/api/v1"]'
 
 awk '
 BEGIN {
