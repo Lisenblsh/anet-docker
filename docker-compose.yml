@@ -30,6 +30,7 @@ services:
       - anet_net
     ports:
       - 8222:8222
+      - 8443:8443
     cap_add:
       - NET_ADMIN
     devices:
