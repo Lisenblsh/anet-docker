@@ -82,8 +82,8 @@ awk -v signing_key="$server_key" \
   next
 }
 
-/quicbind_to =/ {
-  print "quicbind_to = \"0.0.0.0:" QUIC_PORT "\""
+/quic_bind_to =/ {
+  print "quic_bind_to = \"0.0.0.0:" QUIC_PORT "\""
   next
 }
 
