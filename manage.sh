@@ -43,6 +43,49 @@ clean_image() {
   fi
 }
 
+create_config() {
+  addclient_out=$(docker compose exec anet-auth /app/anet-auth -a $1 2>/dev/null)
+  private_key=$(echo "$addclient_out" | awk -F'"' '
+/private_key/ { print $2 }
+')
+
+  domain=$(cat .env | grep DOMAIN | awk -F '=' '/DOMAIN/ {print $2}')
+  quic_port=$(cat .env | grep QUIC_PORT | awk -F '=' '/QUIC_PORT/ {print $2}')
+  ssh_port=$(cat .env | grep SSH_PORT | awk -F '=' '/SSH_PORT/ {print $2}')
+  server_public_key=$(cat ./generated-keys/public_server_key)
+
+  awk -v domain="$domain" \
+    -v quic_port="$quic_port" \
+    -v ssh_port="$ssh_port" \
+    -v private_key="$private_key" \
+    -v server_public_key="$server_public_key" '
+
+/address =/ {
+  print "address = \"" domain ":" quic_port "\""
+  next
+}
+
+/mode =/ {
+  print "mode = \"quic\""
+  next
+}
+
+/private_key =/ {
+  print "private_key = \"" private_key "\"" 
+  next
+}
+
+/server_pub_key =/ {
+  print "server_pub_key = \"" server_public_key "\""
+  next
+}
+
+{ print }
+
+' ./client_template.toml
+
+}
+
 case $1 in
 -b | --build)
   if check_image $2; then
@@ -52,7 +95,7 @@ case $1 in
   fi
   ;;
 -a | --addclient)
-  docker compose exec anet-auth /app/anet-auth -a $2
+  create_config $2
   ;;
 -g | --genconf)
   docker compose -f ./generate.yml run --rm --remove-orphans anet-genconf
