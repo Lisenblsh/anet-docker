@@ -18,8 +18,8 @@ services:
   anet-server:
     build:
       context: ./anet-server/
-      dockerfile: Dockerfile
-    image: anet-server:latest
+      dockerfile: Dockerfile.local
+    image: anet-server:local
     container_name: anet-server
     restart: unless-stopped
     volumes:

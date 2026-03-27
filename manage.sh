@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-images=("anet-auth" "anet-server" "anet-keygen" "anet-genconf")
+images=("anet-auth" "anet-server" "anet-server:local" "anet-keygen" "anet-genconf")
 
 check_image() {
   local value="$1"
@@ -18,15 +18,25 @@ check_image() {
 }
 
 build_image() {
+  set -x
+  path="${1//:/.}"
+
+  image_name="${1%%:*}"
+  image_version="${1#*:}"
+
+  if [ -z "$image_version" ]; then
+    image_version="latest"
+  fi
+
   if [[ "$1" == "all" ]]; then
     for item in "${images[@]}"; do
       build_image $item
     done
   elif [[ "$1" == "anet-genconf" ]]; then
     build_image "anet-keygen"
-    docker build -t $1 "./$1"
+    docker build -t $1 -f "./$image_name/Dockerfile.$image_version" "./$image_name"
   else
-    docker build -t $1 "./$1"
+    docker build -t $1 -f "./$image_name/Dockerfile.$image_version" "./$image_name"
   fi
 }
 
