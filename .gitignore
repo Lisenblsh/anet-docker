@@ -2,4 +2,4 @@ config/**
 pg_data/**
 generated-keys/**
 .env
-
+docker-compose.yml
