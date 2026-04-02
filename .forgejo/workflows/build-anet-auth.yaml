@@ -1,0 +1,13 @@
+name: Build Docker image for anet-auth
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ "v*" ]
+  workflow_dispatch:
+
+jobs:
+  call-template:
+    uses: ./.forgejo/workflows/build-template.yml
+    with:
+      IMAGE_NAME: anet-auth
