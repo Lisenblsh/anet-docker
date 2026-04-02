@@ -49,7 +49,7 @@ jobs:
               ./$IMAGE_NAME
           else
             docker build \
-              --build-arg APP_VERSION=main \
+              --build-arg APP_VERSION=master \
               -t $REGISTRY/$NAMESPACE/$IMAGE_NAME:$SHA \
               -t $REGISTRY/$NAMESPACE/$IMAGE_NAME:edge \
               ./$IMAGE_NAME
