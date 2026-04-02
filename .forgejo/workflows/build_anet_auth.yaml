@@ -1,0 +1,66 @@
+name: Build Docker image for anet-auth
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ "v*" ]
+  workflow_dispatch:
+
+env:
+  REGISTRY: ${{ secrets.REGISTRY_URL }}
+  NAMESPACE: ${{ secrets.REGISTRY_USER }}
+  IMAGE_NAME: anet-auth
+
+jobs:
+  build:
+    runs-on: docker
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare variables
+        run: |
+          SHORT_SHA=$(git rev-parse --short HEAD)
+
+          if [[ "$GITHUB_REF" == refs/tags/* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/}
+            echo "MODE=release" >> $GITHUB_ENV
+            echo "VERSION=$VERSION" >> $GITHUB_ENV
+          else
+            echo "MODE=edge" >> $GITHUB_ENV
+            echo "SHA=$SHORT_SHA" >> $GITHUB_ENV
+          fi
+
+      - name: Install docker into workflow
+        run: apt-get update && apt-get install -y docker.io
+
+      - name: Login to Forgejo Registry
+        run: |
+          echo "${{ secrets.REGISTRY_TOKEN }}" | docker login $REGISTRY_URL -u "${{ secrets.REGISTRY_USER }}" --password-stdin
+
+      - name: Build
+        run: |
+          if [[ "$MODE" == "release" ]]; then
+            docker build \
+              --build-arg APP_VERSION=$VERSION \
+              -t $REGISTRY/$NAMESPACE/$IMAGE_NAME:$VERSION \
+              -t $REGISTRY/$NAMESPACE/$IMAGE_NAME:latest \
+              ./$IMAGE_NAME
+          else
+            docker build \
+              --build-arg APP_VERSION=main \
+              -t $REGISTRY/$NAMESPACE/$IMAGE_NAME:$SHA \
+              -t $REGISTRY/$NAMESPACE/$IMAGE_NAME:edge \
+              ./$IMAGE_NAME
+          fi
+
+      - name: Push
+        run: |
+          if [[ "$MODE" == "release" ]]; then
+            docker push $REGISTRY/$NAMESPACE/$IMAGE_NAME:$VERSION
+            docker push $REGISTRY/$NAMESPACE/$IMAGE_NAME:latest
+          else
+            docker push $REGISTRY/$NAMESPACE/$IMAGE_NAME:$SHA
+            docker push $REGISTRY/$NAMESPACE/$IMAGE_NAME:edge
+          fi
