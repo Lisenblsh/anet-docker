@@ -1,4 +1,4 @@
-name: Build Docker image for anet-auth
+name: Build Docker image for anet-genconf
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
 env:
   REGISTRY: ${{ secrets.REGISTRY_URL }}
   NAMESPACE: ${{ secrets.REGISTRY_USER }}
-  IMAGE_NAME: anet-auth
+  IMAGE_NAME: anet-genconf
 
 jobs:
   build:

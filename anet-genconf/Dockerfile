@@ -1,4 +1,7 @@
-FROM anet-keygen:latest
+
+ARG APP_VERSION
+
+FROM git.lisenblsh.art/lisenblsh/anet-keygen:${APP_VERSION}
 
 WORKDIR /app
 

@@ -5,6 +5,8 @@ RUN apt-get update && apt-get install -y git protobuf-compiler
 
 WORKDIR /app
 
+ARG APP_VERSION
+
 RUN git clone --branch ${APP_VERSION} --depth 1 https://github.com/ZeroTworu/anet.git .
 
 WORKDIR /app/anet-server
