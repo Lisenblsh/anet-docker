@@ -1,6 +1,9 @@
 services:
   anet-auth:
-    image: git.lisenblsh.art/lisenblsh/anet-auth:latest
+    build:
+      context: ./anet-auth/
+      dockerfile: Dockerfile
+    image: anet-auth:latest
     container_name: anet-auth
     restart: unless-stopped
     depends_on:
@@ -13,7 +16,10 @@ services:
       - "3000"
 
   anet-server:
-    image: git.lisenblsh.art/lisenblsh/anet-server:latest
+    build:
+      context: ./anet-server/
+      dockerfile: Dockerfile
+    image: anet-server:latest
     container_name: anet-server
     restart: unless-stopped
     volumes:
@@ -33,13 +39,19 @@ services:
       - /dev/net/tun:/dev/net/tun
 
   anet-keygen:
-    image: git.lisenblsh.art/lisenblsh/anet-keygen:latest
+    build:
+      context: ./anet-keygen/
+      dockerfile: Dockerfile
+    image: anet-keygen:latest
     container_name: anet-keygen
     profiles: 
       - generate
 
   anet-genconf:
-    image: git.lisenblsh.art/lisenblsh/anet-genconf:latest
+    build:
+      context: ./anet-genconf/
+      dockerfile: Dockerfile
+    image: anet-genconf:latest
     container_name: anet-genconf
     profiles:
       - generate
