@@ -8,6 +8,7 @@ on:
 
 jobs:
   call-template:
+    runs-on: docker
     uses: ./.forgejo/workflows/build-template.yml
     with:
       IMAGE_NAME: anet-auth

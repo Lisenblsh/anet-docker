@@ -13,7 +13,6 @@ env:
 
 jobs:
   build:
-    runs-on: docker
 
     steps:
       - name: Checkout
