@@ -63,8 +63,8 @@ jobs:
 
             docker build \
               --build-arg APP_VERSION=edge \
-              -t $REGISTRY/$NAMESPACE/$IMAGE_NAME_GENCONF:$VERSION \
-              -t $REGISTRY/$NAMESPACE/$IMAGE_NAME_GENCONF:latest \
+              -t $REGISTRY/$NAMESPACE/$IMAGE_NAME_GENCONF:$SHA \
+              -t $REGISTRY/$NAMESPACE/$IMAGE_NAME_GENCONF:edge \
               ./$IMAGE_NAME_GENCONF
           fi
 
