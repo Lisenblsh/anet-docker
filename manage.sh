@@ -62,11 +62,13 @@ create_config() {
   domain=$(cat .env | grep DOMAIN | awk -F '=' '/DOMAIN/ {print $2}')
   quic_port=$(cat .env | grep QUIC_PORT | awk -F '=' '/QUIC_PORT/ {print $2}')
   ssh_port=$(cat .env | grep SSH_PORT | awk -F '=' '/SSH_PORT/ {print $2}')
+  vnc_port=$(cat .env | grep VNC_PORT | awk -F '=' '/VNC_PORT/ {print $2}')
   server_public_key=$(cat ./generated-keys/public_server_key)
 
   awk -v domain="$domain" \
     -v quic_port="$quic_port" \
     -v ssh_port="$ssh_port" \
+    -v vnc_port="$vnc_port" \
     -v private_key="$private_key" \
     -v server_public_key="$server_public_key" '
 
@@ -108,7 +110,11 @@ case $1 in
   create_config $2
   ;;
 -g | --genconf)
-  docker compose -f ./generate.yml run --rm --remove-orphans anet-genconf
+  if [[ "$2" == "source" ]]; then
+    docker compose -f ./generate_source.yml run --rm --remove-orphans anet-genconf
+  else
+    docker compose -f ./generate.yml run --rm --remove-orphans anet-genconf
+  fi
   ;;
 -c | --clean)
   if check_image $2; then

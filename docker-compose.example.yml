@@ -25,6 +25,7 @@ services:
     ports:
       - "${SSH_PORT}:${SSH_PORT}"
       - "${QUIC_PORT}:${QUIC_PORT}/udp"
+      - "${VNC_PORT}:${VNC_PORT}"
     cap_add:
       - NET_ADMIN
     sysctls:

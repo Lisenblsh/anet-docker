@@ -60,7 +60,8 @@ awk -v signing_key="$server_key" \
   -v auth_servers="$auth_servers" \
   -v if_name="$ANET_TUN" \
   -v SSH_PORT="$SSH_PORT" \
-  -v QUIC_PORT="$QUIC_PORT" '
+  -v QUIC_PORT="$QUIC_PORT" \
+  -v VNC_PORT="$VNC_PORT" '
 
 /server_signing_key =/ {
   print "server_signing_key = \"" signing_key "\""
@@ -89,6 +90,11 @@ awk -v signing_key="$server_key" \
 
 /ssh_bind_to =/ {
   print "ssh_bind_to = \"0.0.0.0:" SSH_PORT "\""
+  next
+}
+
+/vnc_bind_to =/ {
+  print "vnc_bind_to = \"0.0.0.0:" VNC_PORT "\""
   next
 }
 

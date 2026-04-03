@@ -83,7 +83,7 @@ exclude_route_for = ["192.168.1.0/32"]
 dns_server_list = ["1.1.1.1", "8.8.8.8"]
 
 [transport]
-mode = "ssh" # "quic"
+mode = "ssh" # "quic", "vnc"
 ssh_user = "hanyuu"
 
 
