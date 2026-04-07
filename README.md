@@ -35,4 +35,6 @@ docker compose up -d
 ```
   6. Отдаем конфиг пользователю (себе, кошке и котятам)
 
+На Ubuntu заметил, что может не быть доступа из anet-server до anet-auth, тогда надо узнать ip адрес в докер сети у anet-auth, и прописать его в `config/server.yaml` вместо anet-auth в `auth_servers` 
+
 source - https://github.com/ZeroTworu/anet
