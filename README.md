@@ -31,7 +31,7 @@ docker compose up -d
 
   5. Генерируем конфиг для клиента
 ```sh
-./manage.sh -c <user name> > client.toml
+./manage.sh -a <user name> > client.toml
 ```
   6. Отдаем конфиг пользователю (себе, кошке и котятам)
 
