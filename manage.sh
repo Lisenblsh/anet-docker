@@ -115,6 +115,7 @@ case $1 in
   else
     docker compose -f ./generate.yml run --rm --remove-orphans anet-genconf
   fi
+  docker rm anet-keygen
   ;;
 -c | --clean)
   if check_image $2; then
