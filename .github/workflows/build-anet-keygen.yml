@@ -60,7 +60,7 @@ jobs:
             docker build \
               --build-arg APP_VERSION=$VERSION \
               -t $IMAGE_KEYGEN:$VERSION \
-              -t $IMAGE_KEYGEN::latest \
+              -t $IMAGE_KEYGEN:latest \
               ./$IMAGE_NAME_KEYGEN
 
             docker build \
