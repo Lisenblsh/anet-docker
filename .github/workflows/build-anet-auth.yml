@@ -58,13 +58,14 @@ jobs:
               --build-arg APP_VERSION=$VERSION \
               -t $IMAGE:$VERSION \
               -t $IMAGE:latest \
-              ./anet-server
+              ./$IMAGE_NAME
+ 
           else
             docker build \
               --build-arg APP_VERSION=master \
               -t $IMAGE:$SHA \
               -t $IMAGE:edge \
-              ./anet-server
+              ./$IMAGE_NAME
           fi
 
       - name: Push
