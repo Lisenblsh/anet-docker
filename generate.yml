@@ -1,10 +1,12 @@
 services:
   anet-keygen:
-    image: git.lisenblsh.art/lisenblsh/anet-keygen:latest
+    #image: git.lisenblsh.art/lisenblsh/anet-keygen:latest
+    image: ghcr.io/lisenblsh/anet-keygen:latest
     container_name: anet-keygen
 
   anet-genconf:
-    image: git.lisenblsh.art/lisenblsh/anet-genconf:latest
+    #image: git.lisenblsh.art/lisenblsh/anet-genconf:latest
+    image: ghcr.io/lisenblsh/anet-genconf:latest
     container_name: anet-genconf
     env_file:
       - .env

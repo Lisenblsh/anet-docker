@@ -1,6 +1,7 @@
 services:
   anet-auth:
-    image: git.lisenblsh.art/lisenblsh/anet-auth:latest
+    #image: git.lisenblsh.art/lisenblsh/anet-auth:latest
+    image: ghcr.io/lisenblsh/anet-auth:latest
     container_name: anet-auth
     restart: unless-stopped
     depends_on:
@@ -13,7 +14,8 @@ services:
       - "3000"
 
   anet-server:
-    image: git.lisenblsh.art/lisenblsh/anet-server:latest
+    #image: git.lisenblsh.art/lisenblsh/anet-server:latest
+    image: ghcr.io/lisenblsh/anet-server:latest
     container_name: anet-server
     restart: unless-stopped
     volumes:
@@ -34,13 +36,15 @@ services:
       - /dev/net/tun:/dev/net/tun
 
   anet-keygen:
-    image: git.lisenblsh.art/lisenblsh/anet-keygen:latest
+    #image: git.lisenblsh.art/lisenblsh/anet-keygen:latest
+    image: ghcr.io/lisenblsh/anet-keygen:latest
     container_name: anet-keygen
     profiles: 
       - generate
 
   anet-genconf:
-    image: git.lisenblsh.art/lisenblsh/anet-genconf:latest
+    #image: git.lisenblsh.art/lisenblsh/anet-genconf:latest
+    image: ghcr.io/lisenblsh/anet-genconf:latest
     container_name: anet-genconf
     profiles:
       - generate

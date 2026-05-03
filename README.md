@@ -23,7 +23,8 @@ v0.5.1 - Кривая
 
   1. Клонируем репозиторий
 ```sh 
-clone https://git.lisenblsh.art/lisenblsh/anet-docker.git
+#clone https://git.lisenblsh.art/lisenblsh/anet-docker.git
+clone https://github.com/Lisenblsh/anet-docker.git
 cd anet-docker
 ```
   2. Копируем .env.example в .env, и меняем переменные на нужные

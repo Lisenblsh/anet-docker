@@ -124,7 +124,12 @@ case $1 in
   fi
   ;;
 -h | --help)
-  echo "This is help"
+  echo "-b|--build <image name>         Build image with <image name>"
+  echo "-a|--addclient <client name>    Create client with <client name> in anet-auth"
+  echo "-g|--genconf                    Generate config file"
+  echo "                                With 'source' option script will use Dockerfile instead registry image"
+  echo "-c|--clean <image name>         Clean images from local registry"
+  echo "-h|--help                       This help message"
   ;;
 *)
   echo "Can't handle it check help -> -h|--help"

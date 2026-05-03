@@ -1,7 +1,8 @@
 
 ARG APP_VERSION
 
-FROM git.lisenblsh.art/lisenblsh/anet-keygen:${APP_VERSION}
+#FROM git.lisenblsh.art/lisenblsh/anet-keygen:${APP_VERSION}
+FROM ghcr.io/lisenblsh/anet-keygen:${APP_VERSION}
 
 WORKDIR /app
 
