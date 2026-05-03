@@ -1,0 +1,80 @@
+name: Build Docker image for anet-auth
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ "v*" ]
+    paths:
+      - 'anet-auth/**'
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: anet-auth
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare variables
+        run: |
+          SHORT_SHA=$(git rev-parse --short HEAD)
+
+          if [[ "$GITHUB_REF" == refs/tags/* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/}
+            echo "MODE=release" >> $GITHUB_ENV
+            echo "VERSION=$VERSION" >> $GITHUB_ENV
+          else
+            echo "MODE=edge" >> $GITHUB_ENV
+            echo "SHA=$SHORT_SHA" >> $GITHUB_ENV
+          fi
+
+      - name: Login to Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Prepare image name
+        run: |
+          OWNER_LC=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          echo "OWNER_LC=$OWNER_LC" >> $GITHUB_ENV
+
+      - name: Build
+        run: |
+          IMAGE=${{ env.REGISTRY }}/${{ env.OWNER_LC }}/${{ env.IMAGE_NAME }}
+
+          if [[ "$MODE" == "release" ]]; then
+            docker build \
+              --build-arg APP_VERSION=$VERSION \
+              -t $IMAGE:$VERSION \
+              -t $IMAGE:latest \
+              ./anet-server
+          else
+            docker build \
+              --build-arg APP_VERSION=master \
+              -t $IMAGE:$SHA \
+              -t $IMAGE:edge \
+              ./anet-server
+          fi
+
+      - name: Push
+        run: |
+          IMAGE=${{ env.REGISTRY }}/${{ env.OWNER_LC }}/${{ env.IMAGE_NAME }}
+
+          if [[ "$MODE" == "release" ]]; then
+            docker push $IMAGE:$VERSION
+            docker push $IMAGE:latest
+          else
+            docker push $IMAGE:$SHA
+            docker push $IMAGE:edge
+          fi
