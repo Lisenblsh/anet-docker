@@ -73,7 +73,9 @@ create_config() {
     -v server_public_key="$server_public_key" '
 
 /address =/ {
-  print "address = \"" domain ":" quic_port "\""
+  print "address = \"" domain ":" quic_port "\" #quic"
+  print "#address = \""domain ":" ssh_port "\" #ssh"
+  print "#address = \""domain ":" vnc_port "\" #vnc"
   next
 }
 
