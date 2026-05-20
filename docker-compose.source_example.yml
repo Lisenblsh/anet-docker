@@ -3,6 +3,8 @@ services:
     build:
       context: ./anet-auth/
       dockerfile: Dockerfile
+      args:
+        APP_VERSION: master
     image: anet-auth:latest
     container_name: anet-auth
     restart: unless-stopped
@@ -19,6 +21,8 @@ services:
     build:
       context: ./anet-server/
       dockerfile: Dockerfile
+      args:
+        APP_VERSION: master
     image: anet-server:latest
     container_name: anet-server
     restart: unless-stopped
@@ -43,6 +47,8 @@ services:
     build:
       context: ./anet-keygen/
       dockerfile: Dockerfile
+      args:
+        APP_VERSION: master
     image: anet-keygen:latest
     container_name: anet-keygen
     profiles: 
@@ -52,6 +58,8 @@ services:
     build:
       context: ./anet-genconf/
       dockerfile: Dockerfile
+      args:
+        APP_VERSION: master
     image: anet-genconf:latest
     container_name: anet-genconf
     profiles:
