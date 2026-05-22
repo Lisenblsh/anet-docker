@@ -141,7 +141,7 @@ END { print ones }
 }
 
 /^[[:space:]]*route_for[[:space:]]*=/ {
-  print "route_for = [\"" route_for "]\""
+  print "route_for = [\"" route_for "\"]"
   next
 }
 
