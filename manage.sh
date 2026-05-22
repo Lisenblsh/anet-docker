@@ -53,7 +53,28 @@ clean_image() {
   fi
 }
 
-create_config() {
+create_server_config() {
+
+  if [ -f "./config/server.toml" ]; then
+    echo "Конфигурация существует"
+    echo "Если продолжить, то это удалит текущий конфиг сервера, и нужно будет перенастраивать всех клиентов"
+    read -rp "Продолжить? [y/N]: " ans
+
+    if [[ "$ans" != "y" && "$ans" != "Y" ]]; then
+      echo "отмена"
+      exit 0
+    fi
+  fi
+
+  if [[ "$1" == "source" ]]; then
+    docker compose -f ./generate_source.yml run --rm --remove-orphans anet-genconf
+  else
+    docker compose -f ./generate.yml run --rm --remove-orphans anet-genconf
+  fi
+  docker rm anet-keygen
+}
+
+create_client_config() {
   addclient_out=$(docker compose exec anet-auth /app/anet-auth -a $1 2>/dev/null)
   private_key=$(echo "$addclient_out" | awk -F'"' '
 /private_key/ { print $2 }
@@ -63,14 +84,39 @@ create_config() {
   quic_port=$(cat .env | grep QUIC_PORT | awk -F '=' '/QUIC_PORT/ {print $2}')
   ssh_port=$(cat .env | grep SSH_PORT | awk -F '=' '/SSH_PORT/ {print $2}')
   vnc_port=$(cat .env | grep VNC_PORT | awk -F '=' '/VNC_PORT/ {print $2}')
+  only_local=$(cat .env | grep ONLY_LOCAL | awk -F '=' '/ONLY_LOCAL/ {print $2}')
   server_public_key=$(cat ./generated-keys/public_server_key)
+
+  if [[ "$only_local" == "true" ]]; then
+    net=$(grep -oP '(?<=net = ")[^"]+' ./config/server.toml)
+    mask=$(grep -oP '(?<=mask = ")[^"]+' ./config/server.toml)
+    prefix=$(awk -F. '
+function bits(x) {
+    c=0
+    while (x>0) { c += x%2; x=int(x/2) }
+    return c
+}
+{
+    for (i=1;i<=4;i++) {
+        n=$i
+        for (b=128;b>0;b/=2)
+            if (n>=b) { ones++; n-=b }
+    }
+}
+END { print ones }
+' <<<"$mask")
+
+    route_for="$net/$prefix"
+  fi
 
   awk -v domain="$domain" \
     -v quic_port="$quic_port" \
     -v ssh_port="$ssh_port" \
     -v vnc_port="$vnc_port" \
     -v private_key="$private_key" \
-    -v server_public_key="$server_public_key" '
+    -v server_public_key="$server_public_key" \
+    -v route_for="$route_for" \
+    -v only_local="$only_local" '
 
 /address =/ {
   print "address = \"" domain ":" quic_port "\" #quic"
@@ -79,18 +125,28 @@ create_config() {
   next
 }
 
-/mode =/ {
+/^[[:space:]]*mode[[:space:]]*=/ {
   print "mode = \"quic\""
   next
 }
 
-/private_key =/ {
+/^[[:space:]]*private_key[[:space:]]*=/ {
   print "private_key = \"" private_key "\"" 
   next
 }
 
-/server_pub_key =/ {
+/^[[:space:]]*server_pub_key[[:space:]]*=/ {
   print "server_pub_key = \"" server_public_key "\""
+  next
+}
+
+/^[[:space:]]*route_for[[:space:]]*=/ {
+  print "route_for = [\"" route_for "]\""
+  next
+}
+
+/^[[:space:]]*manual_routing[[:space:]]*=/ {
+  print "manual_routing = " only_local
   next
 }
 
@@ -109,15 +165,10 @@ case $1 in
   fi
   ;;
 -a | --addclient)
-  create_config $2
+  create_client_config $2
   ;;
 -g | --genconf)
-  if [[ "$2" == "source" ]]; then
-    docker compose -f ./generate_source.yml run --rm --remove-orphans anet-genconf
-  else
-    docker compose -f ./generate.yml run --rm --remove-orphans anet-genconf
-  fi
-  docker rm anet-keygen
+  create_server_config $2
   ;;
 -c | --clean)
   if check_image $2; then
