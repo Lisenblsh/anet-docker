@@ -42,31 +42,6 @@ services:
       - net.ipv4.ip_forward=1
     devices:
       - /dev/net/tun:/dev/net/tun
-
-  anet-keygen:
-    build:
-      context: ./anet-keygen/
-      dockerfile: Dockerfile
-      args:
-        APP_VERSION: master
-    image: anet-keygen:latest
-    container_name: anet-keygen
-    profiles: 
-      - generate
-
-  anet-genconf:
-    build:
-      context: ./anet-genconf/
-      dockerfile: Dockerfile
-      args:
-        APP_VERSION: master
-    image: anet-genconf:latest
-    container_name: anet-genconf
-    profiles:
-      - generate
-    volumes:
-      - ./generated-keys:/app/keys
-      - ./config:/app/config
  
   anet-db:
     container_name: anet-db
