@@ -22,6 +22,8 @@ openssl req -x509 -newkey ed25519 \
 
 auth_servers='["http://anet-auth:3000/api/v1"]'
 
+curl -fL https://raw.githubusercontent.com/ZeroTworu/anet/master/contrib/config/server.toml -o server_template.toml
+
 awk '
 BEGIN {
   cert = ""
@@ -83,7 +85,7 @@ awk -v signing_key="$server_key" \
   next
 }
 
-/quic_bind_to =/ {
+/quic_?bind_to =/ {
   print "quic_bind_to = \"0.0.0.0:" QUIC_PORT "\""
   next
 }

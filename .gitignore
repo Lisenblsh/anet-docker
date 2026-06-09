@@ -3,3 +3,5 @@ pg_data/**
 generated-keys/**
 .env
 docker-compose.yml
+anet-genconf/server_template.toml
+client_template.toml

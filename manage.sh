@@ -109,6 +109,8 @@ END { print ones }
     route_for="$net/$prefix"
   fi
 
+  curl -L https://raw.githubusercontent.com/ZeroTworu/anet/master/contrib/config/client.toml -o client_template.toml 2 &>/dev/null
+
   awk -v domain="$domain" \
     -v quic_port="$quic_port" \
     -v ssh_port="$ssh_port" \
