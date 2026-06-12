@@ -46,14 +46,16 @@ jobs:
       - name: Build
         run: |
           if [[ "$MODE" == "release" ]]; then
+
+            ORIG_VERSION=$(echo "$VERSION" | sed 's/-.*//')
             docker build \
-              --build-arg APP_VERSION=$VERSION \
+              --build-arg APP_VERSION=$ORIG_VERSION \
               -t $REGISTRY/$NAMESPACE/$IMAGE_NAME_KEYGEN:$VERSION \
               -t $REGISTRY/$NAMESPACE/$IMAGE_NAME_KEYGEN:latest \
               ./$IMAGE_NAME_KEYGEN
 
             docker build \
-              --build-arg APP_VERSION=$VERSION \
+              --build-arg APP_VERSION=$ORIG_VERSION \
               -t $REGISTRY/$NAMESPACE/$IMAGE_NAME_GENCONF:$VERSION \
               -t $REGISTRY/$NAMESPACE/$IMAGE_NAME_GENCONF:latest \
               ./$IMAGE_NAME_GENCONF

@@ -57,14 +57,15 @@ jobs:
           IMAGE_KEYGEN=${{ env.REGISTRY }}/${{ env.OWNER_LC }}/${{ env.IMAGE_NAME_KEYGEN }}
           IMAGE_GENCONF=${{ env.REGISTRY }}/${{ env.OWNER_LC }}/${{ env.IMAGE_NAME_GENCONF }}
           if [[ "$MODE" == "release" ]]; then
+            ORIG_VERSION=$(echo "$VERSION" | sed 's/-.*//')
             docker build \
-              --build-arg APP_VERSION=$VERSION \
+              --build-arg APP_VERSION=$ORIG_VERSION \
               -t $IMAGE_KEYGEN:$VERSION \
               -t $IMAGE_KEYGEN:latest \
               ./$IMAGE_NAME_KEYGEN
 
             docker build \
-              --build-arg APP_VERSION=$VERSION \
+              --build-arg APP_VERSION=$ORIG_VERSION \
               -t $IMAGE_GENCONF:$VERSION \
               -t $IMAGE_GENCONF:latest \
               ./$IMAGE_NAME_GENCONF

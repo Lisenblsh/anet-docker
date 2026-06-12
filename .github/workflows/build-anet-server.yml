@@ -54,8 +54,9 @@ jobs:
           IMAGE=${{ env.REGISTRY }}/${{ env.OWNER_LC }}/${{ env.IMAGE_NAME }}
 
           if [[ "$MODE" == "release" ]]; then
+            ORIG_VERSION=$(echo "$VERSION" | sed 's/-.*//')
             docker build \
-              --build-arg APP_VERSION=$VERSION \
+              --build-arg APP_VERSION=$ORIG_VERSION \
               -t $IMAGE:$VERSION \
               -t $IMAGE:latest \
               ./$IMAGE_NAME
