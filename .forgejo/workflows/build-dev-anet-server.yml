@@ -1,17 +1,17 @@
-name: Build Docker image for anet-auth
+name: Build Docker image for anet-server
 
 on:
   push:
     branches: [ fork ]
     tags: [ "v*" ]
     paths:
-      - 'anet-auth/**'
+      - 'anet-server/**'
   workflow_dispatch:
 
 env:
   REGISTRY: ${{ secrets.REGISTRY_URL }}
   NAMESPACE: ${{ secrets.REGISTRY_USER }}
-  IMAGE_NAME: anet-auth
+  IMAGE_NAME: anet-server
 
 jobs:
   build:

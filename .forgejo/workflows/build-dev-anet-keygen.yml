@@ -1,17 +1,19 @@
-name: Build Docker image for anet-auth
+name: Build Docker image for anet-keygen and anet-genconf
 
 on:
   push:
     branches: [ fork ]
     tags: [ "v*" ]
     paths:
-      - 'anet-auth/**'
+      - 'anet-keygen/**'
+      - 'anet-genconf/**'
   workflow_dispatch:
 
 env:
   REGISTRY: ${{ secrets.REGISTRY_URL }}
   NAMESPACE: ${{ secrets.REGISTRY_USER }}
-  IMAGE_NAME: anet-auth
+  IMAGE_NAME_KEYGEN: anet-keygen
+  IMAGE_NAME_GENCONF: anet-genconf
 
 jobs:
   build:
@@ -42,11 +44,19 @@ jobs:
         run: |
           docker build \
             --build-arg APP_VERSION=dev \
-            -t $REGISTRY/$NAMESPACE/$IMAGE_NAME:$VERSION \
-            -t $REGISTRY/$NAMESPACE/$IMAGE_NAME:dev \
-            ./$IMAGE_NAME
+            -t $REGISTRY/$NAMESPACE/$IMAGE_NAME_KEYGEN:$VERSION \
+            -t $REGISTRY/$NAMESPACE/$IMAGE_NAME_KEYGEN:dev \
+            ./$IMAGE_NAME_KEYGEN
+
+          docker build \
+            --build-arg APP_VERSION=dev \
+            -t $REGISTRY/$NAMESPACE/$IMAGE_NAME_GENCONF:$VERSION \
+            -t $REGISTRY/$NAMESPACE/$IMAGE_NAME_GENCONF:dev \
+            ./$IMAGE_NAME_GENCONF
 
       - name: Push
         run: |
-          docker push $REGISTRY/$NAMESPACE/$IMAGE_NAME:$VERSION
-          docker push $REGISTRY/$NAMESPACE/$IMAGE_NAME:dev
+          docker push $REGISTRY/$NAMESPACE/$IMAGE_NAME_KEYGEN:$VERSION
+          docker push $REGISTRY/$NAMESPACE/$IMAGE_NAME_KEYGEN:dev
+          docker push $REGISTRY/$NAMESPACE/$IMAGE_NAME_GENCONF:$VERSION
+          docker push $REGISTRY/$NAMESPACE/$IMAGE_NAME_GENCONF:dev
