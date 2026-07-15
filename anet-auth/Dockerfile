@@ -1,7 +1,7 @@
 # STAGE 1: build anet-auth
 FROM rust:latest AS builder
 
-RUN apt-get update && apt-get install -y git
+RUN apt-get update && apt-get install -y git protobuf-compiler
 
 WORKDIR /app
 
@@ -17,6 +17,8 @@ RUN cargo build --release
 FROM debian:bookworm-slim
 
 WORKDIR /app
+
+COPY --from=builder /app/contrib/client_template.toml /opt/anet/client_template.toml
 
 COPY --from=builder /app/target/release/anet-auth /app/anet-auth
 

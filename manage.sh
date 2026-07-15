@@ -2,6 +2,10 @@
 
 images=("anet-auth" "anet-server" "anet-server:local" "anet-keygen" "anet-genconf")
 
+registr_admin() {
+  docker compose exec anet-auth /app/anet-auth --add-su $1
+}
+
 check_image() {
   local value="$1"
   if [[ "all" == "$value" ]]; then
@@ -111,7 +115,8 @@ END { print ones }
 
   curl -L https://raw.githubusercontent.com/ZeroTworu/anet/master/contrib/config/client.toml -o client_template.toml &>/dev/null
 
-  awk -v domain="$domain" \
+  awk \
+    -v domain="$domain" \
     -v quic_port="$quic_port" \
     -v ssh_port="$ssh_port" \
     -v vnc_port="$vnc_port" \
@@ -119,42 +124,62 @@ END { print ones }
     -v server_public_key="$server_public_key" \
     -v route_for="$route_for" \
     -v only_local="$only_local" '
-
-/address =/ {
-  print "address = \"" domain ":" quic_port "\" #quic"
-  print "#address = \""domain ":" ssh_port "\" #ssh"
-  print "#address = \""domain ":" vnc_port "\" #vnc"
-  next
+BEGIN {
+    server = ""
 }
 
-/^[[:space:]]*mode[[:space:]]*=/ {
-  print "mode = \"quic\""
-  next
+/^[[:space:]]*\[\[servers\]\]/ {
+    server = ""
 }
 
-/^[[:space:]]*private_key[[:space:]]*=/ {
-  print "private_key = \"" private_key "\"" 
-  next
+$0 ~ /name = "GM Primary \[QUIC\]"/ {
+    server = "quic"
+}
+
+$0 ~ /name = "GM Primary \[SSH\]"/ {
+    server = "ssh"
+}
+
+$0 ~ /name = "GM Primary \[VNC\]"/ {
+    server = "vnc"
+}
+
+/^[[:space:]]*address[[:space:]]*=/ {
+    if (server == "quic")
+        print "address = \"" domain ":" quic_port "\""
+    else if (server == "ssh")
+        print "address = \"" domain ":" ssh_port "\""
+    else if (server == "vnc")
+        print "address = \"" domain ":" vnc_port "\""
+    else
+        print
+    next
+}
+
+ /^[[:space:]]*private_key[[:space:]]*=/ {
+    print "private_key = \"" private_key "\""
+    next
 }
 
 /^[[:space:]]*server_pub_key[[:space:]]*=/ {
-  print "server_pub_key = \"" server_public_key "\""
-  next
+    print "server_pub_key = \"" server_public_key "\""
+    next
 }
 
 /^[[:space:]]*route_for[[:space:]]*=/ {
-  print "route_for = [\"" route_for "\"]"
-  next
+    print "route_for = [\"" route_for "\"]"
+    next
 }
 
 /^[[:space:]]*manual_routing[[:space:]]*=/ {
-  print "manual_routing = " only_local
-  next
+    print "manual_routing = " only_local
+    next
 }
 
-{ print }
-
-' ./client_template.toml
+{
+    print
+}
+' client_template.toml
 
 }
 
@@ -168,6 +193,9 @@ case $1 in
   ;;
 -a | --addclient)
   create_client_config $2
+  ;;
+--add-su)
+  registr_admin $2
   ;;
 -g | --genconf)
   create_server_config $2
