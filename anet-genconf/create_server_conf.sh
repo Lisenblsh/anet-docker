@@ -49,6 +49,7 @@ BEGIN {
   next
 }
 
+
 skip && /"""/ {
   skip=0
   next
@@ -64,6 +65,12 @@ awk -v signing_key="$server_key" \
   -v SSH_PORT="$SSH_PORT" \
   -v QUIC_PORT="$QUIC_PORT" \
   -v VNC_PORT="$VNC_PORT" '
+
+/ssh_host_key =/ {
+  print "ssh_host_key = \"/etc/ssh/ssh_host_rsa_key\""
+  next
+}
+
 
 /server_signing_key =/ {
   print "server_signing_key = \"" signing_key "\""
