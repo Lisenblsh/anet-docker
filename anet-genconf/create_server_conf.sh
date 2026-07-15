@@ -24,6 +24,8 @@ auth_servers='["http://anet-auth:3000/api/v1"]'
 
 curl -fL https://raw.githubusercontent.com/ZeroTworu/anet/master/contrib/config/server.toml -o server_template.toml
 
+[ -f "server_template.toml" ] || cp server_template.toml.bak server_template.toml
+
 awk '
 BEGIN {
   cert = ""
