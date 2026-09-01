@@ -39,6 +39,7 @@ services:
       - "${SSH_PORT}:${SSH_PORT}"
       - "${QUIC_PORT}:${QUIC_PORT}/udp"
       - "${VNC_PORT}:${VNC_PORT}"
+      - "${WS_PORT}:${WS_PORT}"
     cap_add:
       - NET_ADMIN
     sysctls:

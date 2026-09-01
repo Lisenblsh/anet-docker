@@ -88,6 +88,7 @@ create_client_config() {
   quic_port=$(cat .env | grep QUIC_PORT | awk -F '=' '/QUIC_PORT/ {print $2}')
   ssh_port=$(cat .env | grep SSH_PORT | awk -F '=' '/SSH_PORT/ {print $2}')
   vnc_port=$(cat .env | grep VNC_PORT | awk -F '=' '/VNC_PORT/ {print $2}')
+  ws_port=$(cat .env | grep WS_PORT | awk -F '=' '/WS_PORT/ {print $2}')
   only_local=$(cat .env | grep ONLY_LOCAL | awk -F '=' '/ONLY_LOCAL/ {print $2}')
   server_public_key=$(cat ./generated-keys/public_server_key)
 
@@ -120,6 +121,7 @@ END { print ones }
     -v quic_port="$quic_port" \
     -v ssh_port="$ssh_port" \
     -v vnc_port="$vnc_port" \
+    -v ws_port="$ws_port" \
     -v private_key="$private_key" \
     -v server_public_key="$server_public_key" \
     -v route_for="$route_for" \
@@ -144,13 +146,19 @@ $0 ~ /name = "GM Primary \[VNC\]"/ {
     server = "vnc"
 }
 
-/^[[:space:]]*address[[:space:]]*=/ {
+$0 ~ /name = "GM Primary \[WS\]"/ {
+    server = "ws"
+}
+
+/^[[:space:]]*dsn[[:space:]]*=/ {
     if (server == "quic")
-        print "address = \"" domain ":" quic_port "\""
+        print "dsn = \"quic://" domain ":" quic_port "\""
     else if (server == "ssh")
-        print "address = \"" domain ":" ssh_port "\""
+        print "dsn = \"ssh://" domain ":" ssh_port "\""
     else if (server == "vnc")
-        print "address = \"" domain ":" vnc_port "\""
+        print "dsn = \"vnc://" domain ":" vnc_port "\""
+    else if (server == "ws")
+        print "dsn = \"ws://" domain ":" vnc_port "/socket\""
     else
         print
     next

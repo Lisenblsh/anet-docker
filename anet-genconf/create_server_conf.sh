@@ -66,7 +66,8 @@ awk -v signing_key="$server_key" \
   -v if_name="$ANET_TUN" \
   -v SSH_PORT="$SSH_PORT" \
   -v QUIC_PORT="$QUIC_PORT" \
-  -v VNC_PORT="$VNC_PORT" '
+  -v VNC_PORT="$VNC_PORT" \
+  -v WS_PORT="$WS_PORT" '
 
 /ssh_host_key =/ {
   print "ssh_host_key = \"/etc/ssh/ssh_host_rsa_key\""
@@ -106,6 +107,11 @@ awk -v signing_key="$server_key" \
 
 /vnc_bind_to =/ {
   print "vnc_bind_to = \"0.0.0.0:" VNC_PORT "\""
+  next
+}
+
+/websocket_bind_to =/ {
+  print "websocket_bind_to = \"0.0.0.0:" WS_PORT "\""
   next
 }
 
