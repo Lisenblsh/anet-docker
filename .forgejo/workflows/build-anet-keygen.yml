@@ -56,6 +56,7 @@ jobs:
 
             docker build \
               --build-arg APP_VERSION=$ORIG_VERSION \
+              --build-arg REPO=git.lisenblsh.art \
               -t $REGISTRY/$NAMESPACE/$IMAGE_NAME_GENCONF:$VERSION \
               -t $REGISTRY/$NAMESPACE/$IMAGE_NAME_GENCONF:latest \
               ./$IMAGE_NAME_GENCONF

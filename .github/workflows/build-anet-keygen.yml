@@ -66,6 +66,7 @@ jobs:
 
             docker build \
               --build-arg APP_VERSION=$ORIG_VERSION \
+              --build-arg REPO=ghcr.io \
               -t $IMAGE_GENCONF:$VERSION \
               -t $IMAGE_GENCONF:latest \
               ./$IMAGE_NAME_GENCONF

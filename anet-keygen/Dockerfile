@@ -14,7 +14,7 @@ WORKDIR /app/anet-keygen
 RUN cargo build --release
 
 # STAGE 2: runtime
-FROM debian:bookworm-slim
+FROM debian:trixie-slim
 
 WORKDIR /app
 
