@@ -14,7 +14,7 @@ WORKDIR /app/anet-server
 RUN cargo build --release
 
 # STAGE 2: runtime
-FROM debian:bookworm-slim
+FROM debian:trixie-slim
 
 RUN apt-get update && \
     apt-get install -y ssh iptables && \
