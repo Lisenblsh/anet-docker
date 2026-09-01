@@ -79,6 +79,7 @@ jobs:
 
             docker build \
               --build-arg APP_VERSION=edge \
+              --build-arg REPO=ghcr.io \
               -t $IMAGE_GENCONF:$SHA \
               -t $IMAGE_GENCONF:edge \
               ./$IMAGE_NAME_GENCONF

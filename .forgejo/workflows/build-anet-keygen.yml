@@ -69,6 +69,7 @@ jobs:
 
             docker build \
               --build-arg APP_VERSION=edge \
+              --build-arg REPO=git.lisenblsh.art \
               -t $REGISTRY/$NAMESPACE/$IMAGE_NAME_GENCONF:$SHA \
               -t $REGISTRY/$NAMESPACE/$IMAGE_NAME_GENCONF:edge \
               ./$IMAGE_NAME_GENCONF
